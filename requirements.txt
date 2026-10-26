@@ -1,0 +1,7 @@
+streamlit>=1.36
+pandas
+requests
+openpyxl
+altair
+vl-convert-python
+streamlit-autorefresh
