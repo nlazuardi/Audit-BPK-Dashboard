@@ -42,12 +42,23 @@ def _unduh(kunci: str) -> bytes:
 
 @st.cache_data(ttl=TTL_DETIK, show_spinner="Narik data...")
 def ambil_raw(kunci: str, sheet=None):
-    """Return (tabel mentah tanpa header, waktu tarik, nama sheet yang dipakai)."""
+    """Return (tabel mentah tanpa header, waktu tarik, nama sheet yang dipakai).
+
+    sheet=None   -> sheet pertama
+    sheet="Nama" -> sheet itu (kalau nggak ada, sheet pertama)
+    sheet="*"    -> SEMUA sheet. Hasilnya dict {nama sheet: tabel}, bukan satu tabel.
+    """
     data = _unduh(kunci)
     waktu = datetime.now(timezone(timedelta(hours=7))).strftime("%d %b %Y, %H:%M:%S WIB")
     xl = pd.ExcelFile(io.BytesIO(data))
+
+    def baca(nama_sheet):
+        # keep_default_na=False: biar teks "N/A" di Excel nggak dianggap kosong oleh pandas
+        df = xl.parse(nama_sheet, header=None, keep_default_na=False, na_values=[""])
+        df.attrs = {}   # buang metadata pandas supaya nggak ikut menurun ke semua tabel turunan
+        return df
+
+    if sheet == "*":
+        return {n: baca(n) for n in xl.sheet_names}, waktu, "semua sheet"
     nama = sheet if sheet in xl.sheet_names else xl.sheet_names[0]
-    # keep_default_na=False: biar teks "N/A" di Excel nggak dianggap kosong oleh pandas
-    raw = xl.parse(nama, header=None, keep_default_na=False, na_values=[""])
-    raw.attrs = {}   # buang metadata pandas supaya nggak ikut menurun ke semua tabel turunan
-    return raw, waktu, nama
+    return baca(nama), waktu, nama
