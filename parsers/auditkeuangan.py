@@ -17,7 +17,7 @@ import pandas as pd
 
 NAMA = "Audit Keuangan"
 KUNCI = "auditkeuangan"   # nama di [link] secrets.toml
-SHEET = None              # None = membaca semua sheet entitas
+SHEET = "*"                # "*" = membaca SEMUA sheet entitas (IFG_Holding, Askrindo, Jamkrindo, Jasindo, JasaRaharja, IFGLife)
 SIAP = True               # True = punya parse() lengkap, tampil sebagai dashboard
 
 URUT_ISSUE = [
@@ -187,9 +187,8 @@ def _parse_single_sheet(df: pd.DataFrame, sheet_name: str) -> list[dict]:
 
 
 def parse(raw: pd.DataFrame) -> pd.DataFrame:
-    sheets = getattr(raw, "attrs", {}).get("sheets")
-    if not sheets:
-        sheets = {SHEET or "IFG_Holding": raw}
+    # raw = dict {nama sheet: tabel} (SHEET = "*"), atau satu tabel kalau cuma satu sheet yang dibaca
+    sheets = raw if isinstance(raw, dict) else {"IFG_Holding": raw}
 
     all_items = []
     for sheet_name, df_sheet in sheets.items():
