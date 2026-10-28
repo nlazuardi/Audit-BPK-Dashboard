@@ -19,6 +19,7 @@ NAMA = "Audit Keuangan"
 KUNCI = "auditkeuangan"   # nama di [link] secrets.toml
 SHEET = "*"                # "*" = membaca SEMUA sheet entitas (IFG_Holding, Askrindo, Jamkrindo, Jasindo, JasaRaharja, IFGLife)
 SIAP = True               # True = punya parse() lengkap, tampil sebagai dashboard
+LABEL_JENIS = "Entitas"    # nama untuk kolom "Jenis Data" di judul, filter, dan grafik halaman ini
 
 URUT_ISSUE = [
     "PSAK 117 & Aktuaria",
