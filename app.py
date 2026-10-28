@@ -52,6 +52,7 @@ elif halaman.SIAP:
     sla = None
     if getattr(halaman, "SLA", False):
         sla = {"target": halaman.SLA_TARGET_HARI, "kerja": halaman.SLA_HARI_KERJA, "libur": halaman.LIBUR}
-    ui.dashboard(items, halaman.KUNCI, halaman.URUT_ISSUE, sla=sla, catatan=getattr(halaman, "CATATAN", ""))
+        ui.dashboard(items, halaman.KUNCI, halaman.URUT_ISSUE, sla=sla, catatan=getattr(halaman, "CATATAN", ""),
+                 label_jenis=getattr(halaman, "LABEL_JENIS", "Jenis Data"))
 else:
     ui.mentah(raw, halaman.KUNCI, nama_sheet)
