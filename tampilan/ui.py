@@ -346,7 +346,7 @@ def dashboard(items: pd.DataFrame, kunci: str, urut_issue: list, sla=None, catat
 
     with st.sidebar:
         st.header("Filter")
-        f_jenis = st.multiselect("Jenis Data", list(items["Jenis Data"].unique()), key=f"{p}_f_jenis")
+        f_jenis = st.multiselect(label_jenis, list(items["Jenis Data"].unique()), key=f"{p}_f_jenis")
         f_div = st.multiselect("Divisi", sorted({d for l in items["Divisi"] for d in l}), key=f"{p}_f_div")
         f_issue = st.multiselect("Issue", urut_issue, key=f"{p}_f_issue")
         f_status = st.multiselect("Status", STATUS_URUT, key=f"{p}_f_status")
@@ -416,7 +416,7 @@ def dashboard(items: pd.DataFrame, kunci: str, urut_issue: list, sla=None, catat
             tampil_chart(c_issue, key=K_ISSUE, klik=True)
             tombol_png(c_issue, f"{p}_per_issue", f"{p}_png_issue", "Distribusi berdasarkan Issue")
 
-        st.markdown("#### Progres per Jenis Data")
+        st.markdown(f"#### Progres per {label_jenis}")
         st.markdown(bar_per_jenis(view), unsafe_allow_html=True)
 
         st.markdown("#### Distribusi per Divisi")
