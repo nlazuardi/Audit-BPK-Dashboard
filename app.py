@@ -39,9 +39,6 @@ except RuntimeError as e:
     st.error(str(e))
     st.stop()
 
-# SEMENTARA, hapus setelah masalahnya ketemu: tampilkan kode apa yang sebenarnya jalan di Cloud
-st.sidebar.caption(f"debug · SHEET={halaman.SHEET!r} · {type(raw).__name__} · {list(raw) if isinstance(raw, dict) else nama_sheet}")
-
 ui.header("Monitoring Audit BPK", halaman.NAMA, waktu)
 
 if hasattr(halaman, "render"):
