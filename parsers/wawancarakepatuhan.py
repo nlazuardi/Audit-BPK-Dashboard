@@ -406,11 +406,11 @@ def render(raw: pd.DataFrame):
 
         e1, e2 = st.columns([1.8, 1])
         with e1:
-            st.markdown("#### Keterlibatan Divisi/Fungsi")
+            st.markdown("#### Keterlibatan Divisi/Fungsi/Anper")
             ch_div = _chart_divisi(df, n_direksi_batang if sertakan else 0)
             ui.tampil_chart(ch_div)
-            ui.tombol_png(ch_div, f"{p}_divisi", f"{p}_png_divisi", "Keterlibatan Divisi/Fungsi", lebar=640)
-            st.caption("Catatan: Jumlah agenda menunjukan keterlibatan divisi/fungsi. Satu agenda dapat melibatkan lebih dari satu divisi.")
+            ui.tombol_png(ch_div, f"{p}_divisi", f"{p}_png_divisi", "Keterlibatan Divisi/Fungsi/Anper", lebar=640)
+            st.caption("Catatan: Jumlah agenda menunjukan keterlibatan divisi/fungsi/anper. Satu agenda dapat melibatkan lebih dari satu divisi.")
         with e2:
             st.markdown("#### Fokus Diskusi Berdasarkan Kategori")
             fokus = fokus_n.reset_index()
