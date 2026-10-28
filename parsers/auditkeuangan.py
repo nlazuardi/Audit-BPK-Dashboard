@@ -314,7 +314,7 @@ def _heatmap(df, ent_urut, urut_issue):
     g["teks"] = np.where(g["Total"] > 0, g["Pending"].astype(str) + "/" + g["Total"].astype(str), "")
     batas = max(2, int(g["Pending"].max() * 0.6))
     base = alt.Chart(g).encode(
-        x=alt.X("Issue:N", sort=urut_issue, title=None, axis=alt.Axis(labelAngle=-25, labelLimit=170)),
+        x=alt.X("Issue:N", sort=urut_issue, title=None, axis=alt.Axis(labelAngle=-25, labelLimit=190, labelOverlap=False)),
         y=alt.Y("Jenis Data:N", sort=ada, title=None),
     )
     rect = base.mark_rect(stroke="white", strokeWidth=2).encode(
@@ -325,7 +325,7 @@ def _heatmap(df, ent_urut, urut_issue):
     )
     teks = base.mark_text(fontSize=13, fontWeight="bold").encode(
         text="teks:N", color=alt.condition(alt.datum.Pending >= batas, alt.value("white"), alt.value("#111111")))
-    return alt.layer(rect, teks).properties(height=44 * len(ada) + 130)
+    return alt.layer(rect, teks).properties(height=44 * len(ada) + 150)
 
 
 def _tabel(d, kolom):
