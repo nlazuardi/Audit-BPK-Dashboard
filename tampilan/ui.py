@@ -328,7 +328,8 @@ def chart_tahap(data):
 
 
 # ====== HALAMAN DASHBOARD (data sudah berkolom standar) ======
-def dashboard(items: pd.DataFrame, kunci: str, urut_issue: list, sla=None, catatan: str = "", hari_ini=None):
+def dashboard(items: pd.DataFrame, kunci: str, urut_issue: list, sla=None, catatan: str = "", hari_ini=None,
+              label_jenis: str = "Jenis Data"):
     p = kunci   # awalan key widget, supaya tiap halaman punya state sendiri
     satuan = ""
 
