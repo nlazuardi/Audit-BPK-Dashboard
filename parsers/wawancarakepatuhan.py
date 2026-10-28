@@ -322,7 +322,7 @@ def render(raw: pd.DataFrame):
         f_bulan = st.multiselect("Bulan", bulan_semua, key=f"{p}_f_bulan")
         f_format = st.multiselect("Metode", sorted(semua["Format"].unique()), key=f"{p}_f_format")
         _opsi_div = sorted({d for l in semua["Divisi"] for d in l} - (set() if sertakan else {DIREKSI_LABEL}))
-        f_div = st.multiselect("Divisi/Fungsi", _opsi_div, key=f"{p}_f_div")
+        f_div = st.multiselect("Divisi / Fungsi", _opsi_div, key=f"{p}_f_div")
         f_fokus = st.multiselect("Fokus diskusi", sorted(semua["Fokus"].unique()), key=f"{p}_f_fokus")
 
     def terapkan(x):
