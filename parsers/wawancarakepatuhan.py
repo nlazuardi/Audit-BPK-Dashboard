@@ -225,7 +225,7 @@ def _donut(agg, warna, sub, layar=True):
     )
     tengah = alt.Chart(pd.DataFrame({"t": [str(total)]})).mark_text(size=30, fontWeight="bold", color=ui.HITAM, dy=-6).encode(text="t:N")
     sub_t = alt.Chart(pd.DataFrame({"t": [sub]})).mark_text(size=11, color="#5B6470", dy=16).encode(text="t:N")
-    tinggi = 260 + 30 * len(agg) + 26 if layar else 260
+    tinggi = 255 + 26 * len(agg) + 26 if layar else 260
     return alt.layer(arc, angka, tengah, sub_t).properties(height=tinggi)
 
 
