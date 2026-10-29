@@ -215,7 +215,7 @@ def _donut(agg, warna, sub, layar=True):
     arc = alt.Chart(agg).mark_arc(innerRadius=60, outerRadius=112, stroke="white", strokeWidth=2).encode(
         theta=theta, order=urut,
         color=alt.Color("Label:N", scale=skala, legend=alt.Legend(orient="bottom", title=None, columns=1, labelLimit=320, symbolType="circle",
-                          labelFontSize=12, symbolSize=90, rowPadding=6, offset=14)),
+                          labelFontSize=12, symbolSize=90, rowPadding=0, offset=14)),
         tooltip=["Kategori", "Jumlah"],
     )
     angka = (
