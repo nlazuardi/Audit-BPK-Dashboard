@@ -413,7 +413,7 @@ def render(raw: pd.DataFrame):
             ui.tombol_png(ch_div, f"{p}_divisi", f"{p}_png_divisi", "Keterlibatan Divisi / Fungsi / Anper", lebar=640)
             st.caption("Catatan: Jumlah agenda menunjukan keterlibatan divisi/fungsi/anper. Satu agenda dapat melibatkan lebih dari satu divisi.")
         with e2:
-            st.markdown("#### Fokus Diskusi per Kategori")
+            st.markdown("#### Fokus Diskusi Berdasarkan Kategori")
             fokus = fokus_n.reset_index()
             fokus.columns = ["Kategori", "Jumlah"]
             ui.tampil_chart(_donut(fokus, WARNA_FOKUS, "Agenda"))
