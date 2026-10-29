@@ -214,7 +214,8 @@ def _donut(agg, warna, sub, layar=True):
     theta, urut = alt.Theta("Jumlah:Q", stack=True), alt.Order("Urut:Q")
     arc = alt.Chart(agg).mark_arc(innerRadius=60, outerRadius=112, stroke="white", strokeWidth=2).encode(
         theta=theta, order=urut,
-        color=alt.Color("Label:N", scale=skala, legend=alt.Legend(orient="bottom", title=None, columns=1, labelLimit=320, symbolType="circle")),
+        color=alt.Color("Label:N", scale=skala, legend=alt.Legend(orient="bottom", title=None, columns=1, labelLimit=320, symbolType="circle",
+                          labelFontSize=12, symbolSize=90, rowPadding=6, offset=14)),
         tooltip=["Kategori", "Jumlah"],
     )
     angka = (
@@ -224,7 +225,7 @@ def _donut(agg, warna, sub, layar=True):
     )
     tengah = alt.Chart(pd.DataFrame({"t": [str(total)]})).mark_text(size=30, fontWeight="bold", color=ui.HITAM, dy=-6).encode(text="t:N")
     sub_t = alt.Chart(pd.DataFrame({"t": [sub]})).mark_text(size=11, color="#5B6470", dy=16).encode(text="t:N")
-    tinggi = 250 + 22 * len(agg) + 24 if layar else 260
+    tinggi = 270 + 30 * len(agg) + 30 if layar else 260
     return alt.layer(arc, angka, tengah, sub_t).properties(height=tinggi)
 
 
@@ -412,7 +413,7 @@ def render(raw: pd.DataFrame):
             ui.tombol_png(ch_div, f"{p}_divisi", f"{p}_png_divisi", "Keterlibatan Divisi / Fungsi / Anper", lebar=640)
             st.caption("Catatan: Jumlah agenda menunjukan keterlibatan divisi/fungsi/anper. Satu agenda dapat melibatkan lebih dari satu divisi.")
         with e2:
-            st.markdown("#### Fokus Diskusi Berdasarkan Kategori")
+            st.markdown("##### Fokus diskusi per kategori")
             fokus = fokus_n.reset_index()
             fokus.columns = ["Kategori", "Jumlah"]
             ui.tampil_chart(_donut(fokus, WARNA_FOKUS, "Agenda"))
