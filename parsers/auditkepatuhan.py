@@ -20,7 +20,8 @@ SLA = True                 # True = halaman ini punya tab SLA
 SLA_TARGET_HARI = 5        # SEMENTARA: ganti dengan target SLA yang sebenarnya (bisa juga diubah dari sidebar dashboard)
 SLA_HARI_KERJA = True      # True = hari kerja (Sen-Jum), False = hari kalender
 LIBUR = []                 # hari libur nasional yang tidak dihitung, mis. ["2026-10-20", "2026-12-25"]
-
+CATATAN = ("Nomor yang punya rincian (a, b, c ... atau 1), 2) ...) cuma dianggap judul utama dan tidak dihitung di statistik. "
+           "Yang dihitung adalah rinciannya.")
 
 SECTIONS = ["Dokumen Umum", "Permintaan Pendapatan", "Permintaan Data Tambahan"]
 
@@ -36,7 +37,18 @@ ISSUE_LAIN = "Lain-lain"
 
 
 DIVISI_ALIAS = {
-    "sekper": "Sekper", "sekdekom": "Sekdekom", "keuangan": "Keuangan", "ti": "IT", "it": "IT",
+    # kiri = cara orang menuliskannya (huruf kecil), kanan = nama yang ditampilkan. Nama mengikuti bagan struktur organisasi.
+    "sekper": "Sekper", "sekretaris perusahaan": "Sekper", "sekdekom": "Sekdekom",
+    "keuangan": "Keuangan", "perencanaan keuangan": "Keuangan",
+    "akp": "AKP", "mpiap": "MPIAP", "mpi ap": "MPIAP",
+    "ppa": "PPA", "pengadaan": "PPA", "tjsl": "PPA",
+    "ti": "Teknologi Informasi", "it": "Teknologi Informasi", "teknologi informasi": "Teknologi Informasi",
+    "strategi perusahaan": "Strategi Perusahaan", "corporate strategy": "Strategi Perusahaan",
+    "mrkk": "MRKK", "manajemen risiko": "MRKK",
+    "m&a": "M&A", "slim": "SLIM", "ooa": "OOA", "aktuaria": "Aktuaria", "skai": "SKAI",
+    "penjaminan": "Bisnis Asuransi Umum & Penjaminan",
+    "divisi bisnis asuransi umum & penjaminan": "Bisnis Asuransi Umum & Penjaminan",
+    "mitrasraya": "PT Mitrasraya",
     "?": "Belum ada PIC", "": "Belum ada PIC", "nan": "Belum ada PIC",
 }
 
