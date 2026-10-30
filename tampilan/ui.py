@@ -118,7 +118,7 @@ def chart_stacked(data, kolom, urut, nama_pilih, tinggi=320):
         .transform_stack(stack="Jumlah", groupby=[kolom], sort=[alt.SortField("urut", order="ascending")], as_=["lo", "hi"])
         .transform_calculate(mid="(datum.lo + datum.hi) / 2")
     )
-    sumbu_y = alt.Y(f"{kolom}:N", sort=urut, title=None)
+    sumbu_y = alt.Y(f"{kolom}:N", sort=urut, title=None, axis=alt.Axis(labelLimit=280))
     bars = (
         base.mark_bar()
         .encode(
@@ -155,7 +155,11 @@ def tampil_chart(chart, key=None, klik=False):
 
 
 def _tanpa_attrs(obj):
-    """Kosongkan metadata (attrs) pandas pada tabel sebelum dikirim ke st.dataframe."""
+    """Kosongkan metadata (attrs) pandas pada tabel sebelum dikirim ke st.dataframe.
+
+    Di pandas baru, Streamlit memanggil df.astype(str) pada tabel berwarna (Styler). Kalau attrs tabel itu
+    berisi objek non-skalar (array/DataFrame), perbandingan attrs di pandas melempar ValueError.
+    """
     data = getattr(obj, "data", None)                     # Styler -> DataFrame di dalamnya
     target = data if isinstance(data, pd.DataFrame) else obj
     if isinstance(target, pd.DataFrame) and target.attrs:
@@ -347,7 +351,7 @@ def dashboard(items: pd.DataFrame, kunci: str, urut_issue: list, sla=None, catat
     with st.sidebar:
         st.header("Filter")
         f_jenis = st.multiselect(label_jenis, list(items["Jenis Data"].unique()), key=f"{p}_f_jenis")
-        f_div = st.multiselect("Divisi", sorted({d for l in items["Divisi"] for d in l}), key=f"{p}_f_div")
+        f_div = st.multiselect("Divisi / Anper", sorted({d for l in items["Divisi"] for d in l}), key=f"{p}_f_div")
         f_issue = st.multiselect("Issue", urut_issue, key=f"{p}_f_issue")
         f_status = st.multiselect("Status", STATUS_URUT, key=f"{p}_f_status")
         f_sla = st.multiselect("Status SLA", KATEGORI, key=f"{p}_f_sla") if sla else []
@@ -419,19 +423,19 @@ def dashboard(items: pd.DataFrame, kunci: str, urut_issue: list, sla=None, catat
         st.markdown(f"#### Progres per {label_jenis}")
         st.markdown(bar_per_jenis(view), unsafe_allow_html=True)
 
-        st.markdown("#### Distribusi per Divisi")
+        st.markdown("#### Distribusi per Divisi / Anper")
         d_div = filt(dasar, k_status, None, k_issue).explode("Divisi")
         urut_div = d_div.groupby("Divisi").size().sort_values(ascending=False).index.tolist()
         c_div = chart_stacked(d_div, "Divisi", urut_div, "pilih_divisi", max(300, 30 * len(urut_div)))
         tampil_chart(c_div, key=K_DIV, klik=True)
-        tombol_png(c_div, f"{p}_per_divisi", f"{p}_png_div", "Distribusi data per divisi", lebar=820)
+        tombol_png(c_div, f"{p}_per_divisi", f"{p}_png_div", "Distribusi per Divisi / Anper", lebar=820)
         st.caption("Baris dengan lebih dari satu PIC dihitung di tiap divisinya.")
 
     # ---- Per Divisi ----
     with tabs["Per Divisi"]:
         rk = rekap(view.explode("Divisi"), "Divisi")
         tampil_df(rk, column_config={"% Done": st.column_config.ProgressColumn("% Done", min_value=0, max_value=100, format="%d%%")})
-        pilih_div = st.selectbox("Lihat permintaan milik divisi", rk["Divisi"].tolist(), key=f"{p}_pilih_div")
+        pilih_div = st.selectbox("Lihat permintaan milik divisi / anper", rk["Divisi"].tolist(), key=f"{p}_pilih_div")
         sub = siapkan_tabel(filt(view, divisi=[pilih_div]))
         st.caption(f"{len(sub)} baris permintaan · Pending ditaruh paling atas")
         tampil_df(berwarna(sub), column_config=cfg_tabel(sub))
