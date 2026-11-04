@@ -21,7 +21,7 @@ SLA_TARGET_HARI = 5        # SEMENTARA: ganti dengan target SLA yang sebenarnya 
 SLA_HARI_KERJA = True      # True = hari kerja (Sen-Jum), False = hari kalender
 LIBUR = []                 # hari libur nasional yang tidak dihitung, mis. ["2026-10-20", "2026-12-25"]
 # CATATAN = ("Nomor yang punya rincian (a, b, c ... atau 1), 2) ...) cuma dianggap judul utama dan tidak dihitung di statistik. "
-           "Yang dihitung adalah rinciannya.")
+#           "Yang dihitung adalah rinciannya.")
 
 SECTIONS = ["Dokumen Umum", "Permintaan Pendapatan", "Permintaan Data Tambahan"]
 
