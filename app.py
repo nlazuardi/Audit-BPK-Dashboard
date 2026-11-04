@@ -38,14 +38,26 @@ if not cek_password():
     st.stop()
 
 # muat ulang otomatis (detik). Atur lewat AUTO_REFRESH_DETIK di secrets.toml, isi 0 untuk mematikan.
-detik = int(st.secrets.get("AUTO_REFRESH_DETIK", 60))
-if detik > 0:
-    try:
-        from streamlit_autorefresh import st_autorefresh
+# detik = int(st.secrets.get("AUTO_REFRESH_DETIK", 60))
+# if detik > 0:
+#   try:
+#       from streamlit_autorefresh import st_autorefresh
 
-        st_autorefresh(interval=detik * 1000, key="auto_refresh")
-    except ImportError:
+#      st_autorefresh(interval=detik * 1000, key="auto_refresh")
+#   except ImportError:
+#       pass
+
+# Ambil pengaturan detik dari secrets.toml (default 60 detik jika tidak diatur)
+detik = int(st.secrets.get("AUTO_REFRESH_DETIK", 60))
+
+if detik > 0:
+    # Menggunakan st.fragment dengan run_every untuk refresh otomatis bagian tertentu/seluruh halaman
+    @st.fragment(run_every=detik)
+    def auto_runner():
+        # Berikan penanda kecil atau biarkan kosong agar proses di bawahnya terpanggil ulang secara periodik
         pass
+    
+    auto_runner()
 
 with st.sidebar:
     nama = st.radio("Data", [h.NAMA for h in HALAMAN])
