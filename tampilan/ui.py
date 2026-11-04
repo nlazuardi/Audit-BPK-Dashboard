@@ -155,12 +155,8 @@ def tampil_chart(chart, key=None, klik=False):
 
 
 def _tanpa_attrs(obj):
-    """Kosongkan metadata (attrs) pandas pada tabel sebelum dikirim ke st.dataframe.
-
-    Di pandas baru, Streamlit memanggil df.astype(str) pada tabel berwarna (Styler). Kalau attrs tabel itu
-    berisi objek non-skalar (array/DataFrame), perbandingan attrs di pandas melempar ValueError.
-    """
-    data = getattr(obj, "data", None)                     # Styler -> DataFrame di dalamnya
+    """Kosongkan metadata (attrs) pandas pada tabel sebelum dikirim ke st.dataframe."""
+    data = getattr(obj, "data", None)               # Styler -> DataFrame di dalamnya
     target = data if isinstance(data, pd.DataFrame) else obj
     if isinstance(target, pd.DataFrame) and target.attrs:
         target.attrs = {}
@@ -288,7 +284,7 @@ def _png(spec_json: str, skala: int = 3) -> bytes:
 
 
 def tombol_png(chart, nama_file, key, judul=None, lebar=760):
-    """Tombol download grafik sebagai PNG resolusi tinggi. Nggak muncul kalau vl-convert-python belum terpasang."""
+    """Tombol download grafik sebagai PNG resolusi tinggi."""
     try:
         import vl_convert  # noqa: F401
     except ImportError:
@@ -331,10 +327,10 @@ def chart_tahap(data):
     return alt.layer(bars, angka).properties(height=240)
 
 
-# ====== HALAMAN DASHBOARD (data sudah berkolom standar) ======
+# ====== HALAMAN DASHBOARD ======
 def dashboard(items: pd.DataFrame, kunci: str, urut_issue: list, sla=None, catatan: str = "", hari_ini=None,
               label_jenis: str = "Jenis Data"):
-    p = kunci   # awalan key widget, supaya tiap halaman punya state sendiri
+    p = kunci
     satuan = ""
 
     if sla:
@@ -362,7 +358,6 @@ def dashboard(items: pd.DataFrame, kunci: str, urut_issue: list, sla=None, catat
     if f_sla:
         dasar = dasar[dasar["Status SLA"].isin(f_sla)]
 
-    # filter dari klik grafik (tiap grafik nyaring grafik lain, bukan dirinya sendiri)
     ver = st.session_state.get("ver", 0)
     K_STATUS, K_DIV, K_ISSUE = f"{p}_c_status_{ver}", f"{p}_c_div_{ver}", f"{p}_c_issue_{ver}"
     k_status = baca_klik(K_STATUS, "pilih_status", "Status")
@@ -370,7 +365,6 @@ def dashboard(items: pd.DataFrame, kunci: str, urut_issue: list, sla=None, catat
     k_issue = baca_klik(K_ISSUE, "pilih_issue", "Issue")
     view = filt(dasar, k_status, k_div, k_issue)
 
-    # kartu ringkasan
     total = len(view)
     n = view["Status"].value_counts()
     done, pending, na = (int(n.get(s, 0)) for s in STATUS_URUT)
@@ -405,7 +399,6 @@ def dashboard(items: pd.DataFrame, kunci: str, urut_issue: list, sla=None, catat
     nama_tab = ["Ringkasan", "Per Divisi", "Per Issue"] + (["SLA"] if sla else []) + ["Pending", "Detail"]
     tabs = dict(zip(nama_tab, st.tabs(nama_tab)))
 
-    # ---- Ringkasan ----
     with tabs["Ringkasan"]:
         st.caption("Klik bagian grafik untuk menyaring seluruh dashboard. Klik di area kosong atau tombol Reset untuk membatalkan.")
         g1, g2 = st.columns([1, 1.4])
@@ -431,7 +424,6 @@ def dashboard(items: pd.DataFrame, kunci: str, urut_issue: list, sla=None, catat
         tombol_png(c_div, f"{p}_per_divisi", f"{p}_png_div", "Distribusi per Divisi / Anper", lebar=820)
         st.caption("Baris dengan lebih dari satu PIC dihitung di tiap divisinya.")
 
-    # ---- Per Divisi ----
     with tabs["Per Divisi"]:
         rk = rekap(view.explode("Divisi"), "Divisi")
         tampil_df(rk, column_config={"% Done": st.column_config.ProgressColumn("% Done", min_value=0, max_value=100, format="%d%%")})
@@ -440,7 +432,6 @@ def dashboard(items: pd.DataFrame, kunci: str, urut_issue: list, sla=None, catat
         st.caption(f"{len(sub)} baris permintaan · Pending ditaruh paling atas")
         tampil_df(berwarna(sub), column_config=cfg_tabel(sub))
 
-    # ---- Per Issue ----
     with tabs["Per Issue"]:
         rk = rekap(view, "Issue", urut_issue)
         tampil_df(rk, column_config={"% Done": st.column_config.ProgressColumn("% Done", min_value=0, max_value=100, format="%d%%")})
@@ -449,7 +440,6 @@ def dashboard(items: pd.DataFrame, kunci: str, urut_issue: list, sla=None, catat
         st.caption(f"{len(sub)} baris permintaan · Pending ditaruh paling atas")
         tampil_df(berwarna(sub), column_config=cfg_tabel(sub))
 
-    # ---- SLA ----
     if sla:
         with tabs["SLA"]:
             st.caption(
@@ -486,7 +476,7 @@ def dashboard(items: pd.DataFrame, kunci: str, urut_issue: list, sla=None, catat
                 tampil_chart(c2)
                 tombol_png(c2, f"{p}_lama_per_tahap", f"{p}_png_sla2", f"Rata-rata lama per tahap ({satuan})", lebar=620)
             st.caption("Tahap 1: dari permintaan BPK sampai diteruskan ke divisi. Tahap 2: dikerjakan divisi. "
-                       "Tahap 3: dari divisi sampai diserahkan ke BPK. Dipakai buat melihat di tahap mana waktu paling banyak habis.")
+                       "Tahap 3: dari divisi sampai diserahkan ke BPK.")
 
             st.markdown("#### SLA per Divisi")
             baris = []
@@ -514,10 +504,9 @@ def dashboard(items: pd.DataFrame, kunci: str, urut_issue: list, sla=None, catat
                 perlu = perlu.sort_values("Lama / berjalan (hari)", ascending=False)
                 st.caption(f"{len(perlu)} baris, diurutkan dari yang paling lama")
                 t = siapkan_tabel(perlu, pending_dulu=False,
-                                  kolom=["Jenis Data", "No", "Permintaan Data", "Divisi", "Status SLA", "Lama / berjalan (hari)"])
+                                 kolom=["Jenis Data", "No", "Permintaan Data", "Divisi", "Status SLA", "Lama / berjalan (hari)"])
                 tampil_df(berwarna(t), column_config=cfg_tabel(t))
 
-    # ---- Pending ----
     with tabs["Pending"]:
         pend = view[view["Status"] == "Pending"]
         if pend.empty:
@@ -533,7 +522,6 @@ def dashboard(items: pd.DataFrame, kunci: str, urut_issue: list, sla=None, catat
             t = siapkan_tabel(pend, pending_dulu=False, kolom=kolom_pend)
             tampil_df(berwarna(t), column_config=cfg_tabel(t))
 
-    # ---- Detail ----
     with tabs["Detail"]:
         cari = st.text_input("Cari di teks permintaan", placeholder="mis. TJSL, kontrak, laporan keuangan", key=f"{p}_cari")
         pending_dulu = st.checkbox("Pending paling atas", value=True, key=f"{p}_pending_dulu")
@@ -550,7 +538,7 @@ def dashboard(items: pd.DataFrame, kunci: str, urut_issue: list, sla=None, catat
                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", key=f"{p}_dl_xlsx")
 
 
-# ====== HALAMAN PRATINJAU (parser belum dibuat) ======
+# ====== HALAMAN PRATINJAU ======
 def _unik(nama):
     hasil, dipakai = [], {}
     for i, n in enumerate(nama):
@@ -563,8 +551,7 @@ def _unik(nama):
 
 
 def mentah(raw: pd.DataFrame, kunci: str, nama_sheet: str):
-    st.info("Aturan baca untuk data ini belum dibuat, jadi yang tampil isi sheet apa adanya. "
-            "Setelah aturannya ditentukan, tulis `parse()` di folder `parsers/` lalu ubah `SIAP = True`.")
+    st.info("Aturan baca untuk data ini belum dibuat, jadi yang tampil isi sheet apa adanya.")
     st.caption(f"Sheet: {nama_sheet} · {raw.shape[0]} baris × {raw.shape[1]} kolom")
 
     terisi = raw.apply(lambda c: c.map(lambda v: not pd.isna(v) and str(v).strip() != "")).sum(axis=1)
