@@ -46,7 +46,6 @@ DIVISI_ALIAS = {
     "strategi perusahaan": "Strategi Perusahaan", "corporate strategy": "Strategi Perusahaan",
     "mrkk": "MRKK", "manajemen risiko": "MRKK",
     "m&a": "M&A", "slim": "SLIM", "ooa": "OOA", "aktuaria": "Aktuaria", "skai": "SKAI",
-    "penjaminan": "Bisnis Asuransi Umum & Penjaminan",
     "divisi bisnis asuransi umum & penjaminan": "Bisnis Asuransi Umum & Penjaminan",
     "mitrasraya": "PT Mitrasraya",
     "?": "Belum ada PIC", "": "Belum ada PIC", "nan": "Belum ada PIC",
