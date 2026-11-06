@@ -40,6 +40,7 @@ DIVISI_ALIAS = {
     # kiri = cara orang menuliskannya (huruf kecil), kanan = nama yang ditampilkan
     "sekper": "Sekper", "sekretaris perusahaan": "Sekper", "sekdekom": "Sekdekom",
     "sdm": "SDM", "keuangan": "Keuangan", "perencanaan keuangan": "Keuangan",
+    "bahana sekuritas": "PT BS",
     "akp": "AKP", "mpiap": "MPIAP", "mpi ap": "MPIAP",
     # PPA dipecah: TJSL dan Pengadaan; PPA tanpa keterangan -> Pengadaan
     "ppa": "Pengadaan", "ppa_pengadaan": "Pengadaan", "pengadaan": "Pengadaan",
