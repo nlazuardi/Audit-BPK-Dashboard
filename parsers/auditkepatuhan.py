@@ -37,33 +37,58 @@ ISSUE_LAIN = "Lain-lain"
 
 
 DIVISI_ALIAS = {
-    # kiri = cara orang menuliskannya (huruf kecil), kanan = nama yang ditampilkan. Nama mengikuti bagan struktur organisasi.
+    # kiri = cara orang menuliskannya (huruf kecil), kanan = nama yang ditampilkan
     "sekper": "Sekper", "sekretaris perusahaan": "Sekper", "sekdekom": "Sekdekom",
-    "keuangan": "Keuangan", "perencanaan keuangan": "Keuangan",
+    "sdm": "SDM", "keuangan": "Keuangan", "perencanaan keuangan": "Keuangan",
     "akp": "AKP", "mpiap": "MPIAP", "mpi ap": "MPIAP",
-    "ppa": "PPA", "pengadaan": "PPA", "tjsl": "PPA",
+    # PPA dipecah: TJSL dan Pengadaan; PPA tanpa keterangan -> Pengadaan
+    "ppa": "Pengadaan", "ppa_pengadaan": "Pengadaan", "pengadaan": "Pengadaan",
+    "tjsl": "TJSL", "ppa-tjsl": "TJSL",   # alias multi-kata: dicek sebelum dipecah per "-"
     "ti": "Teknologi Informasi", "it": "Teknologi Informasi", "teknologi informasi": "Teknologi Informasi",
     "strategi perusahaan": "Strategi Perusahaan", "corporate strategy": "Strategi Perusahaan",
     "mrkk": "MRKK", "manajemen risiko": "MRKK",
     "m&a": "M&A", "slim": "SLIM", "ooa": "OOA", "aktuaria": "Aktuaria", "skai": "SKAI",
-    "divisi bisnis asuransi umum penjaminan": "Aspen",
+    "penjaminan": "Bisnis Asuransi Umum & Penjaminan",
+    "divisi bisnis asuransi umum & penjaminan": "Bisnis Asuransi Umum & Penjaminan",
     "mitrasraya": "PT Mitrasraya",
     "?": "Belum ada PIC", "": "Belum ada PIC", "nan": "Belum ada PIC",
 }
 
+# Alias yang mengandung "-" (urutan panjang ke pendek supaya cek lengkap menang duluan)
+_ALIAS_HYPHEN = sorted(
+    [(k, v) for k, v in DIVISI_ALIAS.items() if "-" in k],
+    key=lambda x: len(x[0]),
+    reverse=True,
+)
 
-def _divisi(pic):
+
+def _resolve(token: str) -> list[str]:
+    """Petakan satu token ke satu atau beberapa nama tampil."""
+    low = re.sub(r"\s*-\s*", "-", token.strip().lower())
+    if low in DIVISI_ALIAS:
+        return [DIVISI_ALIAS[low]]
+    for alias_key, alias_val in _ALIAS_HYPHEN:
+        if alias_key in low:
+            return [alias_val]
+    if "-" in token and not token.strip().upper().startswith("PT"):
+        bagian = [b.strip() for b in re.split(r"\s*-\s*", token) if b.strip()]
+        dikenal = [DIVISI_ALIAS[b.lower()] for b in bagian if b.lower() in DIVISI_ALIAS]
+        return dikenal or [DIVISI_ALIAS.get(bagian[0].lower(), bagian[0])]
+    return [DIVISI_ALIAS.get(token.strip().lower(), token.strip())]
+
+
+def _divisi(pic: str) -> list[str]:
     s = str(pic).strip()
-    if re.fullmatch(r"n\s*[/.]?\s*a\.?", s, re.I):   # PIC diisi "N/A"
+    if re.fullmatch(r"n\s*[/.]?\s*a\.?", s, re.I):
         return ["Belum ada PIC"]
-    out = []
-    for p in re.split(r"\s*(?:/|\n|,|\bdan\b)\s*", s):
+    out: list[str] = []
+    for p in re.split(r"\s*(?:/|\n|,|;|\+|\s&\s|\bdan\b)\s*", s):
         p = p.strip()
-        if "-" in p and not p.upper().startswith("PT"):
-            p = p.split("-")[0].strip()      # PPA-TJSL -> PPA, MRKK-Kebijakan -> MRKK
-        p = DIVISI_ALIAS.get(p.lower(), p)
-        if p and p not in out:
-            out.append(p)
+        if not p:
+            continue
+        for mapped in _resolve(p):
+            if mapped and mapped not in out:
+                out.append(mapped)
     return out or ["Belum ada PIC"]
 
 
