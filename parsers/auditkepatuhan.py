@@ -42,6 +42,7 @@ DIVISI_ALIAS = {
     "sdm": "SDM", "keuangan": "Keuangan", "perencanaan keuangan": "Keuangan",
     "bahana sekuritas": "PT BS",
     "akp": "AKP", "mpiap": "MPIAP", "mpi ap": "MPIAP",
+    "legal": "Hukum",
     # PPA dipecah: TJSL dan Pengadaan; PPA tanpa keterangan -> Pengadaan
     "ppa": "Pengadaan", "ppa_pengadaan": "Pengadaan", "pengadaan": "Pengadaan",
     "tjsl": "TJSL", "ppa-tjsl": "TJSL",   # alias multi-kata: dicek sebelum dipecah per "-"
